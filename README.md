@@ -87,7 +87,7 @@ A complete and detailed API specification is provided via the Postman collection
 
 * **File:** You can find the collection file in the root of this repository: `Curvvtech.postman_collection.json`. Import this file into your Postman client to test all endpoints.
 * **Public Link:** You can also view the documentation online at the following public link:
-    * [**View Postman Documentation**](<your-public-postman-link-here>)
+    * [**View Postman Documentation**](https://documenter.getpostman.com/view/40691244/2sB3BHnUov)
 
 ### API Endpoint Overview
 
