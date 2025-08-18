@@ -1,0 +1,253 @@
+{
+	"info": {
+		"_postman_id": "2f1d5865-4a0c-4555-928b-69cf5b6061e1",
+		"name": "Smart-Device-Management",
+		"description": "This collection contains all the API endpoints for the Smart Device Management Platform. It's organized into three folders that cover the entire application flow:\n\n1. **User Management:** For creating an account and logging in.\n    \n2. **Device Management:** For adding, viewing, and managing your smart devices.\n    \n3. **Data & Analytics:** For logging events and retrieving usage data from your devices.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "40691244"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Hello\",\r\n  \"email\": \"hello@example.com\",\r\n  \"password\": \"SecurePass123\",\r\n  \"role\": \"user\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL-Test}}/auth/signup",
+						"description": "### Endpoint: `POST {{URL-Test}}/auth/signup`\n\nThis endpoint is used to register a new user in the system. It allows clients to create an account by providing necessary user information.\n\n#### Request Body\n\nThe request must include a JSON object with the following parameters:\n\n- **name** (string): The full name of the user.\n    \n- **email** (string): The email address of the user. It must be unique and valid.\n    \n- **password** (string): A secure password for the user's account. It should meet the security requirements set by the system.\n    \n- **role** (string): The role assigned to the user, typically set to \"user\" for standard accounts.\n    \n\n**Example Request Body:**\n\n``` json\n{\n  \"name\": \"Hello\",\n  \"email\": \"hello@example.com\",\n  \"password\": \"SecurePass123\",\n  \"role\": \"user\"\n}\n\n ```\n\n#### Important Headers\n\n- `Content-Type: application/json`: This header must be included to indicate that the request body format is JSON.\n    \n\n#### Response Structure\n\nUpon successful registration, the server will respond with a JSON object containing the following fields:\n\n- **message** (string): A confirmation message indicating that the user has been successfully registered.\n    \n- **userId** (string): The unique identifier assigned to the newly created user.\n    \n\n**Example Response:**\n\n``` json\n{\n  \"message\": \"User registered successfully\",\n  \"userId\": \"12345\"\n}\n\n ```\n\n#### Notes\n\n- Ensure that the email provided is not already in use to avoid conflicts.\n    \n- The password should adhere to the security guidelines specified by the API documentation."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"hello@example.com\",\r\n    \"password\": \"SecurePass123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL-Test}}/auth/login",
+						"description": "### Login Endpoint\n\nThis endpoint is used to authenticate a user by logging them into the system. Upon successful authentication, the server will typically return a token or session identifier that can be used for subsequent requests requiring user authentication.\n\n#### Request\n\n**Method:** POST  \n**Endpoint:** `{{URL-Test}}/auth/login`\n\n**Request Body:**  \nThe request body must be in JSON format and should include the following parameters:\n\n- **email** (string): The email address of the user attempting to log in. This must be a valid email format.\n    \n- **password** (string): The password associated with the user's account. It should be kept secure and not exposed.\n    \n\n**Example Request Body:**\n\n``` json\n{\n  \"email\": \"user@example.com\",\n  \"password\": \"YourSecurePassword\"\n}\n\n ```\n\n#### Response\n\nUpon a successful login, the server will respond with a JSON object that typically includes:\n\n- **token** (string): A unique token that is generated for the authenticated session. This token should be included in the headers of subsequent requests to access protected resources.\n    \n- **user** (object): An object containing user-specific information such as user ID, name, and roles.\n    \n\n**Example Response:**\n\n``` json\n{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR...\",\n  \"user\": {\n    \"id\": \"12345\",\n    \"name\": \"John Doe\",\n    \"roles\": [\"user\"]\n  }\n}\n\n ```\n\n#### Usage Notes\n\n- Ensure that the email and password fields are populated correctly to avoid authentication errors.\n    \n- Keep the authentication token secure and do not expose it in public repositories or logs.\n    \n- This endpoint is essential for any application that requires user authentication before granting access to protected resources."
+					},
+					"response": []
+				},
+				{
+					"name": "Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTJjNzlmYTUyMjYyZjJkMTZiNjNiYSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NDk5OTMwLCJleHAiOjE3NTU1ODYzMzB9.oVpsOrQ5ec-maHhpvsVuU1ekA049pSpdvACyPnKYdrc"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL-Test}}/auth/me",
+						"description": "## Get User Information\n\nThis endpoint retrieves the information about the currently authenticated user.\n\n### Request\n\n- **Method**: `GET`\n    \n- **Endpoint**: `{{URL-Test}}/auth/me`\n    \n\n### Parameters\n\nThis request does not require any additional parameters.\n\n### Response\n\nThe expected response will include details about the authenticated user, typically in JSON format. The response will contain user-specific information such as user ID, username, email, and other relevant attributes.\n\nEnsure that the request is made with valid authentication headers to access the user information successfully."
+					},
+					"response": []
+				}
+			],
+			"description": "This collection handles all aspects of user identity. We use these requests to **create a new user account** and to **log in an existing user**. The login request is the most important, as it provides the JWT `authToken` that is required to make authorized calls in the other collections."
+		},
+		{
+			"name": "Devices",
+			"item": [
+				{
+					"name": "Create-Device",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTJjNzlmYTUyMjYyZjJkMTZiNjNiYSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1NDk5OTMwLCJleHAiOjE3NTU1ODYzMzB9.oVpsOrQ5ec-maHhpvsVuU1ekA049pSpdvACyPnKYdrc"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Bedroom Room Fan\",\r\n    \"type\" : \"Fan\",\r\n    \"status\" : \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL-Test}}/devices",
+						"description": "### POST /devices\n\nThis endpoint is used to create a new device in the system. The request allows users to specify the details of the device they wish to add, including its name, type, and status. This request is also used to save a specific field from the response.\n\n#### Request Headers\n\n- `Content-Type`: Must be set to `application/json` to indicate that the request body is in JSON format.\n    \n\n#### Request Body\n\nThe request body must be a JSON object containing the following parameters:\n\n- **name** (string): The name of the device (e.g., \"Bedroom Room Fan\").\n    \n- **type** (string): The type of device being added (e.g., \"Fan\").\n    \n- **status** (string): The current status of the device (e.g., \"active\").\n    \n\n#### Example Request\n\n``` json\n{\n  \"name\": \"Bedroom Room Fan\",\n  \"type\": \"Fan\",\n  \"status\": \"active\"\n}\n\n ```\n\n#### Expected Response\n\nUpon successful creation of the device, the API will return a response indicating the success of the operation, typically including the details of the created device or a confirmation message. Make sure to handle any potential errors in the response, which may indicate issues with the provided data or server problems."
+					},
+					"response": []
+				},
+				{
+					"name": "List-Devices",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{Token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": "{{URL-Test}}/devices/",
+						"description": "### Endpoint: `GET /devices/`\n\nThis endpoint retrieves a list of devices from the server. It is used to obtain information about all available devices in the system.\n\n#### Request Format\n\n- **Method**: GET\n    \n- **URL**: `{{URL-Test}}/devices/`\n    \n- **Request Body**: This endpoint does not require a request body.\n    \n\n#### Response Structure\n\nThe response will contain a JSON object with the following structure:\n\n- **devices**: An array of device objects, where each device object includes:\n    \n    - **id**: Unique identifier for the device.\n        \n    - **name**: The name of the device.\n        \n    - **type**: The type/category of the device.\n        \n    - **status**: Current operational status of the device.\n        \n\n#### Example Response\n\n``` json\n{\n    \"devices\": [\n        {\n            \"id\": \"1\",\n            \"name\": \"Device A\",\n            \"type\": \"Sensor\",\n            \"status\": \"active\"\n        },\n        {\n            \"id\": \"2\",\n            \"name\": \"Device B\",\n            \"type\": \"Camera\",\n            \"status\": \"inactive\"\n        }\n    ]\n}\n\n ```\n\nThe response will return a status code of `200 OK` upon successful retrieval of the device list."
+					},
+					"response": []
+				},
+				{
+					"name": "Update-Device",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{Token}}"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Main Hall Light\",\r\n    \"status\": \"inactive\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL-Test}}/devices/68a2d7e5e9a37667d10884fd",
+						"description": "## PATCH /devices/{deviceId}\n\nThis endpoint is used to update the properties of a specific device identified by its unique `deviceId`. The request allows clients to modify the device's attributes such as its name and status.\n\n### Request Body Format\n\nThe request body must be in JSON format and can include the following parameters:\n\n- **name** (string): The new name for the device. This should be a descriptive label that identifies the device.\n    \n- **status** (string): The current operational status of the device. This can be set to values such as \"active\" or \"inactive\".\n    \n\n**Example Request Body:**\n\n``` json\n{\n  \"name\": \"Main Hall Light\",\n  \"status\": \"inactive\"\n}\n\n ```\n\n### Response Structure\n\nUpon a successful update, the response will typically include the updated device details, confirming the changes made. The structure of the response may include:\n\n- **deviceId** (string): The unique identifier of the device.\n    \n- **name** (string): The updated name of the device.\n    \n- **status** (string): The updated status of the device.\n    \n- **updatedAt** (string): A timestamp indicating when the device was last updated.\n    \n\n**Example Response:**\n\n``` json\n{\n  \"deviceId\": \"68a2d7e5e9a37667d10884fd\",\n  \"name\": \"Main Hall Light\",\n  \"status\": \"inactive\",\n  \"updatedAt\": \"2023-10-01T12:00:00Z\"\n}\n\n ```\n\nEnsure that the request is properly formatted and includes the necessary fields to successfully update the device information."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete-Device",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{Token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{URL-Test}}/devices/68a2da48e9a37667d1088504",
+						"description": "## DELETE /devices/{deviceId}\n\nThis endpoint is used to delete a specific device from the system identified by its unique `deviceId`.\n\n### URL Parameters\n\n- `deviceId` (string): The unique identifier of the device that you wish to delete. This parameter is required and must be included in the URL.\n    \n\n### Request\n\nThis is a DELETE request and does not require a request body.\n\n### Response\n\nUpon successful deletion, the server will respond with a status code indicating the result of the operation. The typical response structure includes:\n\n- A message confirming the deletion of the device.\n    \n- A status code indicating success (e.g., 204 No Content) or failure (e.g., 404 Not Found if the device does not exist).\n    \n\n### Example Response\n\n- **204 No Content**: Indicates that the device was successfully deleted.\n    \n- **404 Not Found**: Indicates that the specified device could not be found.\n    \n\nEnsure that you have the necessary permissions to delete the device before making this request."
+					},
+					"response": []
+				},
+				{
+					"name": "HeartBeat-Of-Device",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{Token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\":\"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL-Test}}/devices/68a2d797e9a37667d10884fb/heartbeat",
+						"description": "### Endpoint Description: Device Heartbeat\n\nThis endpoint is used to send a heartbeat signal for a specific device identified by its unique ID. The heartbeat signal indicates the current status of the device, allowing the server to monitor its activity and health.\n\n### Request Format\n\n- **Method**: POST\n    \n- **URL**: `{{URL-Test}}/devices/{deviceId}/heartbeat`\n    \n- **Path Parameter**:\n    \n    - `deviceId` (string): The unique identifier for the device (e.g., `68a2d797e9a37667d10884fb`).\n        \n- **Request Body**: The request body must be in JSON format and contain the following key:\n    \n    - `status` (string): The current status of the device. For example, it can be set to `\"active\"` to indicate that the device is operational.\n        \n\n**Example Request Body**:\n\n``` json\n{\n  \"status\": \"active\"\n}\n\n ```\n\n### Response Structure\n\nUpon a successful request, the server will respond with a status code indicating the result of the operation. The response may include additional information about the device's status or confirmation of the heartbeat signal being received.\n\n- **Response Code**: Typically, a successful request will return a `200 OK` status code.\n    \n- **Response Body**: The response body may contain details such as:\n    - `message` (string): A confirmation message indicating the status update was successful.\n        \n    - `timestamp` (string): The time at which the heartbeat was received.\n        \n\nThis endpoint is crucial for maintaining the operational integrity of devices within the system, allowing for real-time status updates and monitoring."
+					},
+					"response": []
+				}
+			],
+			"description": "This collection is for managing the devices a user owns. After logging in and getting an `authToken`, we use these requests to **add a new device** to our account, **view all our devices**, **update a specific device's details**, and **remove a device**. It also includes an endpoint to signal that a device is still online (heartbeat)."
+		},
+		{
+			"name": "Logs",
+			"item": [
+				{
+					"name": "Create-Log",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{Token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"event\": \"units_consumed\",\r\n  \"value\": 1.5\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL-Test}}/devices/68a2d7e5e9a37667d10884fd/logs",
+						"description": "## POST /devices/{device_id}/logs\n\nThis endpoint is used to log events related to a specific device identified by its unique `device_id`. The request allows you to record an event indicating the amount of resources consumed by the device.\n\n### Request Body Parameters\n\n- **event** (string): A string representing the type of event being logged. In this case, it should be set to `\"units_consumed\"` to indicate that the logged event pertains to the consumption of units.\n    \n- **value** (number): A numeric value that represents the quantity of units consumed during the event. This value should be a decimal number, for example, `1.5`.\n    \n\n### Example Request\n\n``` json\n{\n  \"event\": \"units_consumed\",\n  \"value\": 1.5\n}\n\n ```\n\n### Expected Response\n\nUpon a successful request, the API will return a response indicating the success of the logging operation. The exact structure of the response may vary, but it typically includes a status message confirming that the event has been logged successfully.\n\n### Notes\n\n- Ensure that the `device_id` in the URL is replaced with the actual ID of the device you wish to log the event for.\n    \n- The request must be sent with the appropriate content type (application/json) to ensure proper processing of the request body.\n    \n- Handle any potential errors gracefully, as the API may return error messages if the request fails due to invalid parameters or other issues."
+					},
+					"response": []
+				},
+				{
+					"name": "Get-Log",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{Token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL-Test}}/devices/68a2d7e5e9a37667d10884fd/logs",
+						"description": "### Endpoint Description\n\nThis endpoint retrieves the logs for a specific device identified by its unique ID.\n\n### Request\n\n- **Method**: GET\n    \n- **URL**: `{{URL-Test}}/devices/{deviceId}/logs`\n    \n- **Path Parameter**:\n    \n    - `deviceId` (string): The unique identifier of the device for which logs are being requested. In this example, the device ID is `68a2d7e5e9a37667d10884fd`.\n        \n\n### Response\n\nThe response will contain the logs associated with the specified device. The structure of the response typically includes:\n\n- **logs** (array): A list of log entries related to the device. Each log entry may include details such as timestamps, log levels, and messages.\n    \n\n### Notes\n\nEnsure that the device ID provided in the request is valid and exists in the system to retrieve the corresponding logs successfully."
+					},
+					"response": []
+				},
+				{
+					"name": "Get-Usage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{Token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL-Test}}/devices/68a2d7e5e9a37667d10884fd/usage",
+						"description": "### Endpoint Description\n\nThis endpoint retrieves the usage information for a specific device identified by its unique ID.\n\n### Request\n\n- **Method**: GET\n    \n- **URL**: `{{URL-Test}}/devices/{deviceId}/usage`\n    \n- **Path Parameter**:\n    \n    - `deviceId` (string): The unique identifier for the device whose usage data is being requested. In this example, the device ID is `68a2d7e5e9a37667d10884fd`.\n        \n\n### Authentication\n\nEnsure that the request includes the necessary authentication headers. Depending on the API's security requirements, this may involve an API key, bearer token, or other authentication mechanisms.\n\n### Response Structure\n\nThe response will typically contain the following fields:\n\n- **usageData** (object): An object containing detailed usage statistics for the specified device.\n    \n    - **totalUsage** (number): The total usage time for the device.\n        \n    - **usageDetails** (array): An array of objects providing breakdowns of usage over time.\n        \n        - **timestamp** (string): The time at which the usage was recorded.\n            \n        - **duration** (number): The duration of usage in seconds.\n            \n\n### Notes\n\n- Ensure that the device ID is valid and corresponds to an existing device in the system.\n    \n- The response may vary based on the device's usage patterns and available data"
+					},
+					"response": []
+				}
+			],
+			"description": "This collection focuses on the data generated by a specific device. We use these requests to **send a new log entry** from a device (like electricity usage) and to **retrieve information** about that device's activity. This includes fetching a list of the most recent logs or getting a calculated summary of its usage over a specific time range (e.g., the last 24 hours)."
+		}
+	]
+}
