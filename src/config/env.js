@@ -1,18 +1,26 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
+
+// This ensures that this is the first thing that runs
 dotenv.config();
 
-function required(name) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing required env var: ${name}`);
-  return v;
+const config = {
+  port: process.env.PORT || 4000,
+  mongoURI: process.env.MONGO_URI, // Now this will have the correct value
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expiresIn: process.env.JWT_EXPIRES_IN || '15m',
+    refreshSecret: process.env.JWT_REFRESH_SECRET,
+    refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+  },
+  redis: {
+    url: process.env.REDIS_URL || 'redis://localhost:6379',
+  },
+};
+
+// Add a check to ensure the secret is loaded. If not, the app will crash with a clear error.
+if (!config.jwt.secret) {
+  console.error("FATAL ERROR: JWT_SECRET is not defined. Check your .env file.");
+  process.exit(1);
 }
 
-export const ENV = {
-  NODE_ENV: process.env.NODE_ENV || "development",
-  PORT: process.env.PORT || 4000,
-  MONGO_URI: required("MONGO_URI"),
-  JWT_SECRET: required("JWT_SECRET"),
-  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || "1d",
-  RATE_LIMIT_WINDOW_MS: Number(process.env.RATE_LIMIT_WINDOW_MS || 60000),
-  RATE_LIMIT_MAX: Number(process.env.RATE_LIMIT_MAX || 100),
-};
+export default config;

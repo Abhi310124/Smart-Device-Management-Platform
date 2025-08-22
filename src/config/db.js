@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { ENV } from "./env.js";
+import  config  from "./env.js";
 
 export async function connectDB() {
   mongoose.set("strictQuery", true);
-  await mongoose.connect(ENV.MONGO_URI, {
+  await mongoose.connect(config.mongoURI, {
     autoIndex: true,
   });
   console.log("✅ MongoDB connected");

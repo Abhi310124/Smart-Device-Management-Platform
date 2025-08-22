@@ -11,6 +11,7 @@ services:
     environment:
       - PORT=4000
       - MONGO_URI=mongodb+srv://admin:admin123@test-devices.ugeunq6.mongodb.net
+      - REDIS_URL=redis://redis:6379
       - JWT_SECRET=f002fa035d86395c
       - JWT_EXPIRES_IN=1d
       - RATE_LIMIT_WINDOW_MS=60000
@@ -32,9 +33,19 @@ services:
       - mongo-data:/data/db
     networks:
       - app-network
+  
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
 
 volumes:
   mongo-data:
+  redis-data:
 
 networks:
   app-network:

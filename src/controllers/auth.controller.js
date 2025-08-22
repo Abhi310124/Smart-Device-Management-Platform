@@ -1,91 +1,43 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import User from "../models/user.model.js";
+import tokenService from '../services/token.service.js';
+import asyncHandler from '../utils/asyncHandler.js';
+import ApiResponse from '../utils/apiResponse.js';
+import ApiError from '../utils/apiError.js';
 
-//Signup function
-async function signup(req, res) {
-  try {
-    console.log("Signup request body:", req.body);
-    const { name, email, password, role } = req.body;
+const signup = asyncHandler(async (req, res) => {
+  await tokenService.registerUser(req.body);
+  res.status(201).json(new ApiResponse(201, null, "User registered successfully"));
+});
 
-    // check if email already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email already registered" });
-    }
+const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const { accessToken, refreshToken, user } = await tokenService.loginUser({ email, password });
 
-    // hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+  res.status(200).json(new ApiResponse(200, {
+    accessToken,
+    refreshToken,
+    user: { id: user._id, name: user.name, email: user.email, role: user.role },
+  }, "Login successful"));
+});
 
-    const user = new User({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-    });
+const refreshToken = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) throw new ApiError(400, 'Refresh token is required');
+  
+  const tokens = await tokenService.refreshAuth(refreshToken);
+  res.status(200).json(new ApiResponse(200, tokens, "Token refreshed successfully"));
+});
 
-    await user.save();
+const logout = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) throw new ApiError(400, 'Refresh token is required');
 
-    res.status(201).json({
-      success: true,
-      message: "User registered successfully",
-      user
-    });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: err.message });
-  }
-}
+  await tokenService.logoutUser(refreshToken);
+  res.status(200).json(new ApiResponse(200, null, "Logout successful"));
+});
 
-//Login function
-async function login(req, res) {
-  try {
-    const { email, password } = req.body;
-
-    // find user
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid email or password" });
-    }
-
-    // check password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid email or password" });
-    }
-
-    // generate token
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
-    
-    res
-    .status(200)
-    .json({
-      success: true,
-      token,
-      message: "Login successful",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: err.message });
-  }
-}
-
-export { signup, login };
+export default {
+  signup,
+  login,
+  refreshToken,
+  logout,
+};

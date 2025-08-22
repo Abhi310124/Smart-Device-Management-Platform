@@ -20,7 +20,7 @@ app.use(morgan("dev"));
 app.use(apiLimiter);
 
 // mount routes
-app.use("/", routes);
+app.use("/api", routes);
 
 // 404 + error
 app.use(notFoundHandler);

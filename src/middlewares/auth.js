@@ -1,24 +1,37 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
+import config from '../config/env.js';
+import User from '../models/user.model.js';
+import ApiError from '../utils/apiError.js';
+import asyncHandler from '../utils/asyncHandler.js';
 
-// Middleware to authenticate JWT tokens
-async function authMiddleware(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  if (!authHeader) {
-    return res.status(401).json({ success: false, message: "No token provided" });
+const protect = asyncHandler(async (req, res, next) => {
+  let token;
+
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
   }
 
-  const token = authHeader.split(" ")[1]; // Expect: Bearer <token>
   if (!token) {
-    return res.status(401).json({ success: false, message: "Invalid token format" });
+    throw new ApiError(401, 'Not authorized, no token provided');
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // attach user { id, role }
-    next();
-  } catch (err) {
-    return res.status(401).json({ success: false, message: "Unauthorized", error: err.message });
-  }
-}
+    // Verify the access token
+    const decoded = jwt.verify(token, config.jwt.secret);
 
-export { authMiddleware };
+    // Find the user from the token's ID
+    req.user = await User.findById(decoded.id).select('-password');
+
+    if (!req.user) {
+      throw new ApiError(401, 'User belonging to this token does no longer exist.');
+    }
+
+    next();
+  } catch (error) {
+    // This will catch expired tokens or any other verification errors
+    throw new ApiError(401, 'Not authorized, token failed or expired');
+  }
+});
+
+// This makes sure 'protect' is a named export
+export { protect };

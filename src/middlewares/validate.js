@@ -1,4 +1,4 @@
-export function validate(schema) {
+export default function validate(schema) {
   return (req, res, next) => {
     const data = ["GET", "DELETE"].includes(req.method)
       ? req.query
