@@ -146,7 +146,7 @@ A complete and detailed API specification is provided via the Postman collection
 * Analytics endpoints: support **1000+ concurrent requests**  
 * Export jobs: processed asynchronously with job tracking  
 
-![Performance Test Results](src/screenshot/performance-test.png)
+![Performance Test Results](src/screenshot/perfomance-test.png)
 
 ---
 
