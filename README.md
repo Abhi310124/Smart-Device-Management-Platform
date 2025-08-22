@@ -1,7 +1,7 @@
 # Smart-Device-Management-Platform
 This collection contains all the API endpoints for the Smart Device Management Platform.
 
-This project is a robust backend service for a smart device management platform, developed as part of the Curvvtech Backend Developer Assignment. It provides a complete set of APIs for user management, device control, data analytics, caching, real-time updates, and reporting — all built with a clean, scalable, and production-ready architecture.
+This project is a robust backend service for a smart device management platform.It provides a complete set of APIs for user management, device control, data analytics, caching, real-time updates, and reporting — all built with a clean, scalable, and production-ready architecture.
 
 ---
 
